@@ -108,7 +108,7 @@ uploaded_file = st.file_uploader("Upload your own image:", type=["jpg", "jpeg", 
 
 if selected_example and selected_example != "None":
     try:
-        example_image_path = os.path.join("examples", selected_example)
+        example_image_path = os.path.join(selected_example)
         original_image = Image.open(example_image_path).convert("RGB")
         resized_original = original_image.resize((512, 512))
         st.image(resized_original, caption=f"Example Image: {selected_example}", use_container_width=True)

@@ -82,16 +82,16 @@ def load_efficientnet():
     device = "cuda" if torch.cuda.is_available() else "cpu"
     effnet_loaded_model = None  # Initialize to None
 
-    # Check if the full UNET model file exists
+    # Check if the full EffNet model file exists
     if not os.path.exists(effnet_pth):
         st.info("EffNet model file not found. Attempting to concatenate chunks...")
         if concatenate_file_chunks(effnet_chunk_prefix, effnet_pth):
-            effmodel = models.efficientnet_b1()
+            effmodel = models.efficientnet_b1(weights=None) # Load with no pretrained weights initially
             num_features = effmodel.classifier[-1].in_features
             effmodel.classifier[-1] = nn.Linear(num_features, 3)
-            st.success("EffNet successful concatenation.")
             try:
                 checkpoint = torch.load(effnet_pth, map_location=torch.device(device))
+                effnet_loaded_model = effmodel # Assign the model instance
                 effnet_loaded_model.load_state_dict(checkpoint)
                 effnet_loaded_model.eval()
                 st.success("EffNet model loaded successfully after concatenation.")
@@ -102,12 +102,13 @@ def load_efficientnet():
             st.error("Failed to concatenate EffNet model chunks. Please ensure all parts are present.")
             st.stop()
     else:
-        # Load the UNET model directly if it exists
-        effmodel = models.efficientnet_b1(weights=None)
+        # Load the EffNet model directly if it exists
+        effmodel = models.efficientnet_b1(weights=None) # Load with no pretrained weights initially
         num_features = effmodel.classifier[-1].in_features
         effmodel.classifier[-1] = nn.Linear(num_features, 3)
         try:
             checkpoint = torch.load(effnet_pth, map_location=torch.device(device))
+            effnet_loaded_model = effmodel # Assign the model instance
             effnet_loaded_model.load_state_dict(checkpoint)
             effnet_loaded_model.eval()
             st.info("EFFNET model loaded successfully.")

@@ -106,8 +106,14 @@ st.title("Fundus images disease classification")
 
 # st.sidebar.subheader("Load Example Image")
 st.sidebar.header("Load Example Image")
-example_images = [None] + [f for f in os.listdir() if f.endswith(('.jpg', '.jpeg', '.png'))]
-selected_example = st.sidebar.selectbox("Choose an example image:", example_images)
+example_images = [None] + [f for f in os.listdir() if f.endswith(('A.png'))]
+selected_example = st.sidebar.selectbox("Choose an AMD example image:", example_images)
+
+example_images2 = [None] + [f for f in os.listdir() if f.endswith(('D.png'))]
+selected_example = st.sidebar.selectbox("Choose an DR example image:", example_images2)
+
+example_images3 = [None] + [f for f in os.listdir() if f.endswith(('N.png'))]
+selected_example = st.sidebar.selectbox("Choose an Normal example image:", example_images3)
 st.sidebar.subheader("Or select None if you want to upload your own image")
 
 uploaded_file = st.file_uploader("Upload your own image:", type=["jpg", "jpeg", "png"])

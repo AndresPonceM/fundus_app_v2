@@ -86,7 +86,7 @@ def load_classifier():
     num_features = shufflenet_loaded_model.fc.in_features
     shufflenet_loaded_model.fc = nn.Linear(num_features, 3)  # Replace the final layer
     try:
-        device = "cuda" if torch.cuda.is_available() else "cpu
+        device = "cuda" if torch.cuda.is_available() else "cpu"
         checkpoint2 = torch.load(classifier_pth, map_location=torch.device(device))
         shufflenet_loaded_model.load_state_dict(checkpoint2)
         shufflenet_loaded_model.eval()

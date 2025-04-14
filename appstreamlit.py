@@ -82,7 +82,7 @@ def load_efficientnet():
     effnet_loaded_model = None  # Initialize to None
 
     # Check if the full UNET model file exists
-    if not os.path.exists(unet_pth):
+    if not os.path.exists(effnet_pth):
         st.info("EffNet model file not found. Attempting to concatenate chunks...")
         if concatenate_file_chunks(effnet_chunk_prefix, effnet_pth):
             effmodel = models.efficientnet_b1(weights=None)

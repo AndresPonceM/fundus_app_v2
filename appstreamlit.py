@@ -42,7 +42,7 @@ def concatenate_file_chunks(chunk_prefix, output_filepath):
 
 unet_filename = "unet_gc_dice_0-9020.pth.tar"
 unet_pth = os.path.join("models", unet_filename)
-unet_chunk_prefix = os.path.join("models", "unet_gc_dice_0-9020_part_")
+unet_chunk_prefix = os.path.join("unet_gc_dice_0-9020_part_")
 device = "cuda" if torch.cuda.is_available() else "cpu"
 unet_loaded_model = None  # Initialize to None
 
@@ -81,7 +81,7 @@ if unet_loaded_model is None:
 ########################## UNET Model Initialization #############################
 ##################################################################################
 
-classifier_pth = r"models\shufflenet_v2_x2_0_lr0-001_epoch30_pretrained.pth.tar"
+classifier_pth = "shufflenet_v2_x2_0_lr0-001_epoch30_pretrained.pth.tar"
 shufflenet_loaded_model = models.shufflenet_v2_x2_0()
 num_features = shufflenet_loaded_model.fc.in_features
 shufflenet_loaded_model.fc = nn.Linear(num_features, 3)  # Replace the final layer

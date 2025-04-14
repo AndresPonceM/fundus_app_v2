@@ -175,7 +175,7 @@ if uploaded_file is not None:
             predicted_label = "DR"
         elif predicted_class == 2:
             predicted_label = "Normal"
-
+        device = "cuda" if torch.cuda.is_available() else "cpu"
         st.write(f"**Predicted Class:** {predicted_label}")
         st.write(f"**This experiment was executed using** {device}")
 

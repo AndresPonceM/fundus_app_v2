@@ -14,6 +14,7 @@ import gc
 import torch.nn as nn
 import torchvision.models as models
 from cnn_builder import UNET
+from torchvision.models import efficientnet_b1
 from auxiliar_functions import unet_preprocess, unet_inference, infer_single_image, apply_binary_mask
 # --- Helper Functions (Adapt these to your specific models) ---
 

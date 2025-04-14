@@ -187,7 +187,7 @@ st.sidebar.subheader("Or select None if you want to upload your own image")
 
 uploaded_file = st.file_uploader("Upload your own image:", type=["jpg", "jpeg", "png"])
 
-if selected_example != "None" and selected_example:
+if selected_example != "None" and selected_example and uploaded_file == "None":
     try:
         aviso = "Las imagenes terminadas en A pertenecen a Degeneración Macular (AMD), terminadas en D a Retinopatía Diabética (DR), y terminadas en N son de pacientes sanos (Normal). Al final se muestra el diagnóstico del clasificador"
         st.write(f"**Nota:** {aviso}")
@@ -225,7 +225,11 @@ if selected_example != "None" and selected_example:
         device = "cuda" if torch.cuda.is_available() else "cpu"
         st.write(f"**Predicted Class:** {predicted_label}")
         st.write(f"**This experiment was executed using** {device}")
-
+        del resized_original
+        del resized_img
+        del binary_mask
+        del segmented_image
+        del uploaded_file
     except Exception as e:
         st.error(f"An error occurred while processing the example image: {e}")
 
@@ -271,6 +275,7 @@ if uploaded_file is not None:
         del resized_img
         del binary_mask
         del segmented_image
+        del uploaded_file
         gc.collect()
     except Exception as e:
         st.error(f"An error occurred: {e}")

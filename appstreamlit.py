@@ -41,7 +41,7 @@ def concatenate_file_chunks(chunk_prefix, output_filepath):
 ##################################################################################
 
 unet_filename = "unet_gc_dice_0-9020.pth.tar"
-unet_pth = os.path.join("models", unet_filename)
+unet_pth = os.path.join(unet_filename)
 unet_chunk_prefix = os.path.join("unet_gc_dice_0-9020_part_")
 device = "cuda" if torch.cuda.is_available() else "cpu"
 unet_loaded_model = None  # Initialize to None

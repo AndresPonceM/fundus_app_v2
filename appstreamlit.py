@@ -36,10 +36,6 @@ def concatenate_file_chunks(chunk_prefix, output_filepath):
     except Exception as e:
         st.error(f"An error occurred during concatenation: {e}")
         return False
-
-##################################################################################
-########################## UNET Model Initialization #############################
-##################################################################################
 @st.cache_resource
 unet_filename = "unet_gc_dice_0-9020.pth.tar"
 unet_pth = os.path.join(unet_filename)
@@ -77,10 +73,6 @@ else:
 
 if unet_loaded_model is None:
     st.stop() # Stop the app if UNET model couldn't be loaded
-
-##################################################################################
-########################## UNET Model Initialization #############################
-##################################################################################
 @st.cache_resource
 classifier_pth = "shufflenet_v2_x2_0_lr0-001_epoch30_pretrained.pth.tar"
 shufflenet_loaded_model = models.shufflenet_v2_x2_0()

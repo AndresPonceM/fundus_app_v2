@@ -116,7 +116,7 @@ uploaded_file = st.file_uploader("Upload your own image:", type=["jpg", "jpeg", 
 if selected_example != "None" and selected_example:
     try:
         aviso = "Las imagenes terminadas en A pertenecen a Degeneración Macular (AMD), terminadas en D a Retinopatía Diabética (DR), y terminadas en N son de pacientes sanos (Normal). Al final se muestra el diagnóstico del clasificador"
-        st.write(f"**Nota:** {predicted_label}")
+        st.write(f"**Nota:** {aviso}")
         example_image_path = os.path.join(selected_example)
         original_image = Image.open(example_image_path).convert("RGB")
         resized_original = original_image.resize((512, 512))

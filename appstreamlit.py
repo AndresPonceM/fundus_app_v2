@@ -50,7 +50,7 @@ def load_unet():
 
     # Check if the full UNET model file exists
     if not os.path.exists(unet_pth):
-        st.info("UNET model file not found. Attempting to concatenate chunks...")
+        #st.info("UNET model file not found. Attempting to concatenate chunks...")
         if concatenate_file_chunks(unet_chunk_prefix, unet_pth):
             unet_loaded_model = UNET(in_channels=3, out_channels=1).to(device)
             try:
@@ -71,9 +71,9 @@ def load_unet():
             checkpoint = torch.load(unet_pth, map_location=torch.device(device))
             unet_loaded_model.load_state_dict(checkpoint["state_dict"])
             unet_loaded_model.eval()
-            st.info("UNET model loaded successfully.")
+            #st.info("UNET model loaded successfully.")
         except Exception as e:
-            st.error(f"Error loading UNET model: {e}")
+            #st.error(f"Error loading UNET model: {e}")
             st.stop()
 
     return unet_loaded_model
@@ -90,7 +90,7 @@ def load_efficientnet():
 
     # Check if the full EffNet model file exists
     if not os.path.exists(effnet_pth):
-        st.info("EffNet model file not found. Attempting to concatenate chunks...")
+        #st.info("EffNet model file not found. Attempting to concatenate chunks...")
         if concatenate_file_chunks(effnet_chunk_prefix, effnet_pth):
             effmodel = models.efficientnet_b1(weights=None) # Load with no pretrained weights initially
             num_features = effmodel.classifier[-1].in_features
@@ -100,7 +100,7 @@ def load_efficientnet():
                 effnet_loaded_model = effmodel # Assign the model instance
                 effnet_loaded_model.load_state_dict(checkpoint)
                 effnet_loaded_model.eval()
-                st.success("EffNet model loaded successfully after concatenation.")
+                #st.success("EffNet model loaded successfully after concatenation.")
             except Exception as e:
                 #st.error(f"Error loading concatenated EffNet model: {e}")
                 st.stop()
@@ -117,7 +117,7 @@ def load_efficientnet():
             effnet_loaded_model = effmodel # Assign the model instance
             effnet_loaded_model.load_state_dict(checkpoint)
             effnet_loaded_model.eval()
-            st.info("EFFNET model loaded successfully.")
+            #st.info("EFFNET model loaded successfully.")
         except Exception as e:
             #st.error(f"Error loading EffNET model: {e}")
             st.stop()
@@ -145,7 +145,7 @@ def load_shufflenet():
         checkpoint2 = torch.load(classifier_pth, map_location=torch.device(device))
         shufflenet_loaded_model.load_state_dict(checkpoint2)
         shufflenet_loaded_model.eval()
-        st.info("ShuffleNet model loaded successfully.")
+        #st.info("ShuffleNet model loaded successfully.")
         return shufflenet_loaded_model
     except Exception as e:
         st.error(f"Error loading ShuffleNet model: {e}")

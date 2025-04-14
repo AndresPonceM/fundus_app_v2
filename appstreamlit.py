@@ -230,7 +230,11 @@ if selected_example != "None" and selected_example:
         device = "cuda" if torch.cuda.is_available() else "cpu"
         st.write(f"**Predicted Class:** {predicted_label}")
         st.write(f"**This experiment was executed using** {device}")
+        cpu_info = platform.processor()
+        cpu_count = psutil.cpu_count(logical=False)
+        logical_cpu_count = psutil.cpu_count(logical=True)
 
+        memory_info = psutil.virtual_memory()
         st.write("\nCPU Information:")
         st.write(f"Processor: {cpu_info}")
         st.write(f"Physical Cores: {cpu_count}")

@@ -181,9 +181,7 @@ st.sidebar.header("Load Example Image")
 example_images = [None] + [f for f in os.listdir() if f.endswith(('.png'))]
 selected_example = st.sidebar.selectbox("Choose an example image:", example_images)
 
-st.sidebar.subheader("Or select None if you want to upload your own image")
-
-st.sidebar.subheader("Or select None if you want to upload your own image")
+st.sidebar.subheader("Or select None and then upload your own image")
 
 uploaded_file = st.file_uploader("Upload your own image:", type=["jpg", "jpeg", "png"])
 

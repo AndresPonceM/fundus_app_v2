@@ -73,6 +73,50 @@ def load_unet():
 
 unet_loaded_model = load_unet()
 
+@st.cache_resource
+def load_efficientnet():
+    effnet_filename = "efficientnet_b1_pretained_experiment5.pth.tar"
+    effnet_pth = os.path.join(effnet_filename)
+    effnet_chunk_prefix = os.path.join("efficientnet_b1_pretained_experiment5_part_")
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    effnet_loaded_model = None  # Initialize to None
+
+    # Check if the full UNET model file exists
+    if not os.path.exists(unet_pth):
+        st.info("EffNet model file not found. Attempting to concatenate chunks...")
+        if concatenate_file_chunks(effnet_chunk_prefix, effnet_pth):
+            effmodel = models.efficientnet_b1(weights=None)
+            num_features = effmodel.classifier[-1].in_features
+            effmodel.classifier[-1] = nn.Linear(num_features, 3)
+            try:
+                checkpoint = torch.load(effnet_pth, map_location=torch.device(device))
+                effnet_loaded_model.load_state_dict(checkpoint["state_dict"])
+                effnet_loaded_model.eval()
+                st.success("EffNet model loaded successfully after concatenation.")
+            except Exception as e:
+                st.error(f"Error loading concatenated EffNet model: {e}")
+                st.stop()
+        else:
+            st.error("Failed to concatenate EffNet model chunks. Please ensure all parts are present.")
+            st.stop()
+    else:
+        # Load the UNET model directly if it exists
+        effmodel = models.efficientnet_b1(weights=None)
+        num_features = effmodel.classifier[-1].in_features
+        effmodel.classifier[-1] = nn.Linear(num_features, 3)
+        try:
+            checkpoint = torch.load(effnet_pth, map_location=torch.device(device))
+            effnet_loaded_model.load_state_dict(checkpoint["state_dict"])
+            effnet_loaded_model.eval()
+            st.info("EFFNET model loaded successfully.")
+        except Exception as e:
+            st.error(f"Error loading EffNET model: {e}")
+            st.stop()
+
+    return effnet_loaded_model
+
+effnet_loaded_model = load_efficientnet()
+
 ##################################################################################
 ########################## Classifier Model Initialization #############################
 ##################################################################################
@@ -93,7 +137,7 @@ def load_classifier():
         st.error(f"Error loading classifier model: {e}")
         return None
 
-shufflenet_loaded_model = load_classifier()
+#shufflenet_loaded_model = load_classifier()
 
 # --- Streamlit App ---
 
@@ -136,7 +180,7 @@ if selected_example != "None" and selected_example:
 
         # --- Classification ---
         st.subheader("Classification")
-        predicted_class = infer_single_image(shufflenet_loaded_model, segmented_image)
+        predicted_class = infer_single_image(effnet_loaded_model, segmented_image)
         if predicted_class == 0:
             predicted_label = "AMD"
         elif predicted_class == 1:

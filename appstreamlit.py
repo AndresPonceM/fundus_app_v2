@@ -85,7 +85,7 @@ def load_efficientnet():
     if not os.path.exists(effnet_pth):
         st.info("EffNet model file not found. Attempting to concatenate chunks...")
         if concatenate_file_chunks(effnet_chunk_prefix, effnet_pth):
-            effmodel = models.efficientnet_b1(weights=None)
+            effmodel = models.efficientnet_b1()
             num_features = effmodel.classifier[-1].in_features
             effmodel.classifier[-1] = nn.Linear(num_features, 3)
             try:

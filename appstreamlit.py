@@ -20,6 +20,10 @@ from auxiliar_functions import unet_preprocess, unet_inference, infer_single_ima
 import platform
 import psutil
 
+def bytes_to_mb(bytes):
+    """Converts bytes to megabytes."""
+    return bytes / (1024 * 1024)
+    
 def concatenate_file_chunks(chunk_prefix, output_filepath):
     """Concatenates the split file chunks."""
     chunk_files = sorted(glob.glob(f"{chunk_prefix}*"))
@@ -226,6 +230,17 @@ if selected_example != "None" and selected_example:
         device = "cuda" if torch.cuda.is_available() else "cpu"
         st.write(f"**Predicted Class:** {predicted_label}")
         st.write(f"**This experiment was executed using** {device}")
+
+        st.write("\nCPU Information:")
+        st.write(f"Processor: {cpu_info}")
+        st.write(f"Physical Cores: {cpu_count}")
+        st.write(f"Logical Cores: {logical_cpu_count}")
+        st.write(f"\nMemory Information:")
+        st.write(f"Total Memory: {bytes_to_mb(memory_info.total):.2f} MB")
+        st.write(f"Available Memory: {bytes_to_mb(memory_info.available):.2f} MB")
+        st.write(f"Used Memory: {bytes_to_mb(memory_info.used):.2f} MB")
+        st.write(f"Memory Utilization: {memory_info.percent}%")
+        
         del resized_original
         del resized_img
         del binary_mask
@@ -269,6 +284,22 @@ if uploaded_file is not None:
         device = "cuda" if torch.cuda.is_available() else "cpu"
         st.write(f"**Predicted Class:** {predicted_label}")
         st.write(f"**This experiment was executed using** {device}")
+        
+        cpu_info = platform.processor()
+        cpu_count = psutil.cpu_count(logical=False)
+        logical_cpu_count = psutil.cpu_count(logical=True)
+
+        memory_info = psutil.virtual_memory()
+        
+        st.write("\nCPU Information:")
+        st.write(f"Processor: {cpu_info}")
+        st.write(f"Physical Cores: {cpu_count}")
+        st.write(f"Logical Cores: {logical_cpu_count}")
+        st.write(f"\nMemory Information:")
+        st.write(f"Total Memory: {bytes_to_mb(memory_info.total):.2f} MB")
+        st.write(f"Available Memory: {bytes_to_mb(memory_info.available):.2f} MB")
+        st.write(f"Used Memory: {bytes_to_mb(memory_info.used):.2f} MB")
+        st.write(f"Memory Utilization: {memory_info.percent}%")
 
         # Explicitly delete large variables after processing
         del resized_original

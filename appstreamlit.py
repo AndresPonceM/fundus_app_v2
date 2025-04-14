@@ -230,7 +230,6 @@ if selected_example != "None" and selected_example:
         del resized_img
         del binary_mask
         del segmented_image
-        del uploaded_file
     except Exception as e:
         st.error(f"An error occurred while processing the example image: {e}")
 

@@ -22,17 +22,17 @@ def concatenate_file_chunks(chunk_prefix, output_filepath):
     """Concatenates the split file chunks."""
     chunk_files = sorted(glob.glob(f"{chunk_prefix}*"))
     if not chunk_files:
-        st.error(f"Error: No chunk files found with prefix '{chunk_prefix}'.")
+        #st.error(f"Error: No chunk files found with prefix '{chunk_prefix}'.")
         return False
     try:
         with open(output_filepath, 'wb') as outfile:
             for chunk_file in chunk_files:
                 with open(chunk_file, 'rb') as infile:
                     outfile.write(infile.read())
-        st.info(f"Successfully concatenated the chunks into '{output_filepath}'.")
+        #st.info(f"Successfully concatenated the chunks into '{output_filepath}'.")
         return True
     except Exception as e:
-        st.error(f"An error occurred during concatenation: {e}")
+        #st.error(f"An error occurred during concatenation: {e}")
         return False
 @st.cache_resource
 def load_unet():
@@ -51,12 +51,12 @@ def load_unet():
                 checkpoint = torch.load(unet_pth, map_location=torch.device(device))
                 unet_loaded_model.load_state_dict(checkpoint["state_dict"])
                 unet_loaded_model.eval()
-                st.success("UNET model loaded successfully after concatenation.")
+                #st.success("UNET model loaded successfully after concatenation.")
             except Exception as e:
-                st.error(f"Error loading concatenated UNET model: {e}")
+                #st.error(f"Error loading concatenated UNET model: {e}")
                 st.stop()
         else:
-            st.error("Failed to concatenate UNET model chunks. Please ensure all parts are present.")
+            #st.error("Failed to concatenate UNET model chunks. Please ensure all parts are present.")
             st.stop()
     else:
         # Load the UNET model directly if it exists
@@ -96,10 +96,10 @@ def load_efficientnet():
                 effnet_loaded_model.eval()
                 st.success("EffNet model loaded successfully after concatenation.")
             except Exception as e:
-                st.error(f"Error loading concatenated EffNet model: {e}")
+                #st.error(f"Error loading concatenated EffNet model: {e}")
                 st.stop()
         else:
-            st.error("Failed to concatenate EffNet model chunks. Please ensure all parts are present.")
+            #st.error("Failed to concatenate EffNet model chunks. Please ensure all parts are present.")
             st.stop()
     else:
         # Load the EffNet model directly if it exists
@@ -113,7 +113,7 @@ def load_efficientnet():
             effnet_loaded_model.eval()
             st.info("EFFNET model loaded successfully.")
         except Exception as e:
-            st.error(f"Error loading EffNET model: {e}")
+            #st.error(f"Error loading EffNET model: {e}")
             st.stop()
 
     return effnet_loaded_model
@@ -132,7 +132,7 @@ def load_shufflenet():
     device = "cuda" if torch.cuda.is_available() else "cpu"
 
     if not os.path.exists(classifier_pth):
-        st.error(f"Error: ShuffleNet checkpoint file not found at {classifier_pth}")
+        #st.error(f"Error: ShuffleNet checkpoint file not found at {classifier_pth}")
         return None
 
     try:

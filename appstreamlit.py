@@ -92,7 +92,7 @@ def load_efficientnet():
             st.success("EffNet successful concatenation.")
             try:
                 checkpoint = torch.load(effnet_pth, map_location=torch.device(device))
-                effnet_loaded_model.load_state_dict(checkpoint["state_dict"])
+                effnet_loaded_model.load_state_dict(checkpoint)
                 effnet_loaded_model.eval()
                 st.success("EffNet model loaded successfully after concatenation.")
             except Exception as e:

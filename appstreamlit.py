@@ -118,7 +118,7 @@ def load_efficientnet():
 
     return effnet_loaded_model
 
-effnet_loaded_model = load_efficientnet()
+#effnet_loaded_model = load_efficientnet()
 
 ##################################################################################
 ########################## Classifier Model Initialization #############################
@@ -151,10 +151,31 @@ st.title("Fundus images disease classification")
 # unet_model_path = st.sidebar.file_uploader("Upload UNet Model (.pth)", type=["pth"])
 # classifier_model_path = st.sidebar.file_uploader("Upload Classifier Model (.pth)", type=["pth"])
 
+# Sidebar for model selection
+st.sidebar.header("Model Selection")
+classifier_model_name = st.sidebar.selectbox(
+    "Choose a Classification Model:",
+    ["EfficientNet", "ShuffleNet"]
+)
+
+# Load the selected classifier model
+if classifier_model_name == "EfficientNet":
+    effnet_loaded_model = load_efficientnet()
+    shufflenet_loaded_model = None # Ensure the other model isn't used
+elif classifier_model_name == "ShuffleNet":
+    shufflenet_loaded_model = load_shufflenet()
+    effnet_loaded_model = None # Ensure the other model isn't used
+else:
+    effnet_loaded_model = None
+    shufflenet_loaded_model = None
+    st.warning("No classification model selected.")
+
 # st.sidebar.subheader("Load Example Image")
 st.sidebar.header("Load Example Image")
 example_images = [None] + [f for f in os.listdir() if f.endswith(('.png'))]
 selected_example = st.sidebar.selectbox("Choose an example image:", example_images)
+
+st.sidebar.subheader("Or select None if you want to upload your own image")
 
 st.sidebar.subheader("Or select None if you want to upload your own image")
 

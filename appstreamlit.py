@@ -106,7 +106,7 @@ def load_efficientnet():
         effmodel.classifier[-1] = nn.Linear(num_features, 3)
         try:
             checkpoint = torch.load(effnet_pth, map_location=torch.device(device))
-            effnet_loaded_model.load_state_dict(checkpoint["state_dict"])
+            effnet_loaded_model.load_state_dict(checkpoint)
             effnet_loaded_model.eval()
             st.info("EFFNET model loaded successfully.")
         except Exception as e:

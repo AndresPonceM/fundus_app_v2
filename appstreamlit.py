@@ -187,7 +187,9 @@ st.sidebar.subheader("Or select None if you want to upload your own image")
 
 uploaded_file = st.file_uploader("Upload your own image:", type=["jpg", "jpeg", "png"])
 
-if selected_example != "None" and selected_example and uploaded_file == "None":
+if selected_example != "None" and selected_example:
+    del uploaded_file
+    gc.collect()
     try:
         aviso = "Las imagenes terminadas en A pertenecen a Degeneración Macular (AMD), terminadas en D a Retinopatía Diabética (DR), y terminadas en N son de pacientes sanos (Normal). Al final se muestra el diagnóstico del clasificador"
         st.write(f"**Nota:** {aviso}")

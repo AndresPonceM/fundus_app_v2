@@ -88,6 +88,7 @@ def load_efficientnet():
             effmodel = models.efficientnet_b1()
             num_features = effmodel.classifier[-1].in_features
             effmodel.classifier[-1] = nn.Linear(num_features, 3)
+            st.success("EffNet successful concatenation.")
             try:
                 checkpoint = torch.load(effnet_pth, map_location=torch.device(device))
                 effnet_loaded_model.load_state_dict(checkpoint["state_dict"])

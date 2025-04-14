@@ -13,6 +13,7 @@ import torch
 import glob  
 import time
 import os
+import gc
 import torch.nn as nn
 import torchvision.models as models
 from cnn_builder import UNET
@@ -39,7 +40,7 @@ def concatenate_file_chunks(chunk_prefix, output_filepath):
 ##################################################################################
 ########################## UNET Model Initialization #############################
 ##################################################################################
-
+@st.cache_resource
 unet_filename = "unet_gc_dice_0-9020.pth.tar"
 unet_pth = os.path.join(unet_filename)
 unet_chunk_prefix = os.path.join("unet_gc_dice_0-9020_part_")
@@ -80,7 +81,7 @@ if unet_loaded_model is None:
 ##################################################################################
 ########################## UNET Model Initialization #############################
 ##################################################################################
-
+@st.cache_resource
 classifier_pth = "shufflenet_v2_x2_0_lr0-001_epoch30_pretrained.pth.tar"
 shufflenet_loaded_model = models.shufflenet_v2_x2_0()
 num_features = shufflenet_loaded_model.fc.in_features
@@ -173,5 +174,11 @@ if uploaded_file is not None:
         st.write(f"**Predicted Class:** {predicted_label}")
         st.write(f"**This experiment was executed using** {device}")
 
+        # Explicitly delete large variables after processing
+        del resized_original
+        del resized_img
+        del binary_mask
+        del segmented_image
+        gc.collect()
     except Exception as e:
         st.error(f"An error occurred: {e}")

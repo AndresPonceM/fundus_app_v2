@@ -5,3 +5,6 @@ torchvision  # Or your specific TorchVision version (should be compatible with P
 numpy
 albumentations
 opencv-python-headless
+platform
+psutil
+streamlit

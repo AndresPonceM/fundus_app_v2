@@ -37,50 +37,65 @@ def concatenate_file_chunks(chunk_prefix, output_filepath):
         st.error(f"An error occurred during concatenation: {e}")
         return False
 @st.cache_resource
-unet_filename = "unet_gc_dice_0-9020.pth.tar"
-unet_pth = os.path.join(unet_filename)
-unet_chunk_prefix = os.path.join("unet_gc_dice_0-9020_part_")
-device = "cuda" if torch.cuda.is_available() else "cpu"
-unet_loaded_model = None  # Initialize to None
+def load_unet():
+    unet_filename = "unet_gc_dice_0-9020.pth.tar"
+    unet_pth = os.path.join(unet_filename)
+    unet_chunk_prefix = os.path.join("unet_gc_dice_0-9020_part_")
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    unet_loaded_model = None  # Initialize to None
 
-# Check if the full UNET model file exists
-if not os.path.exists(unet_pth):
-    st.info("UNET model file not found. Attempting to concatenate chunks...")
-    if concatenate_file_chunks(unet_chunk_prefix, unet_pth):
+    # Check if the full UNET model file exists
+    if not os.path.exists(unet_pth):
+        st.info("UNET model file not found. Attempting to concatenate chunks...")
+        if concatenate_file_chunks(unet_chunk_prefix, unet_pth):
+            unet_loaded_model = UNET(in_channels=3, out_channels=1).to(device)
+            try:
+                checkpoint = torch.load(unet_pth, map_location=torch.device(device))
+                unet_loaded_model.load_state_dict(checkpoint["state_dict"])
+                unet_loaded_model.eval()
+                st.success("UNET model loaded successfully after concatenation.")
+            except Exception as e:
+                st.error(f"Error loading concatenated UNET model: {e}")
+                st.stop()
+        else:
+            st.error("Failed to concatenate UNET model chunks. Please ensure all parts are present.")
+            st.stop()
+    else:
+        # Load the UNET model directly if it exists
         unet_loaded_model = UNET(in_channels=3, out_channels=1).to(device)
         try:
             checkpoint = torch.load(unet_pth, map_location=torch.device(device))
             unet_loaded_model.load_state_dict(checkpoint["state_dict"])
             unet_loaded_model.eval()
-            st.success("UNET model loaded successfully after concatenation.")
+            st.info("UNET model loaded successfully.")
         except Exception as e:
-            st.error(f"Error loading concatenated UNET model: {e}")
+            st.error(f"Error loading UNET model: {e}")
             st.stop()
-    else:
-        st.error("Failed to concatenate UNET model chunks. Please ensure all parts are present.")
-        st.stop()
-else:
-    # Load the UNET model directly if it exists
-    unet_loaded_model = UNET(in_channels=3, out_channels=1).to(device)
-    try:
-        checkpoint = torch.load(unet_pth, map_location=torch.device(device))
-        unet_loaded_model.load_state_dict(checkpoint["state_dict"])
-        unet_loaded_model.eval()
-        st.info("UNET model loaded successfully.")
-    except Exception as e:
-        st.error(f"Error loading UNET model: {e}")
-        st.stop()
 
-if unet_loaded_model is None:
-    st.stop() # Stop the app if UNET model couldn't be loaded
+    return unet_loaded_model
+
+unet_loaded_model = load_unet()
+
+##################################################################################
+########################## Classifier Model Initialization #############################
+##################################################################################
 @st.cache_resource
-classifier_pth = "shufflenet_v2_x2_0_lr0-001_epoch30_pretrained.pth.tar"
-shufflenet_loaded_model = models.shufflenet_v2_x2_0()
-num_features = shufflenet_loaded_model.fc.in_features
-shufflenet_loaded_model.fc = nn.Linear(num_features, 3)  # Replace the final layer
-checkpoint2 = torch.load(classifier_pth, map_location=torch.device(device))
-shufflenet_loaded_model.load_state_dict(checkpoint2)
-shufflenet_loaded_model.eval()
+def load_classifier():
+    classifier_pth = "shufflenet_v2_x2_0_lr0-001_epoch30_pretrained.pth.tar"
+    shufflenet_loaded_model = models.shufflenet_v2_x2_0()
+    num_features = shufflenet_loaded_model.fc.in_features
+    shufflenet_loaded_model.fc = nn.Linear(num_features, 3)  # Replace the final layer
+    try:
+        checkpoint2 = torch.load(classifier_pth, map_location=torch.device(device))
+        shufflenet_loaded_model.load_state_dict(checkpoint2)
+        shufflenet_loaded_model.eval()
+        st.info("Classifier model loaded successfully.")
+        return shufflenet_loaded_model
+    except Exception as e:
+        st.error(f"Error loading classifier model: {e}")
+        return None
+
+shufflenet_loaded_model = load_classifier()
 
 # --- Streamlit App ---
 

@@ -124,20 +124,26 @@ def load_efficientnet():
 ########################## Classifier Model Initialization #############################
 ##################################################################################
 @st.cache_resource
-def load_classifier():
+def load_shufflenet():
     classifier_pth = "shufflenet_v2_x2_0_lr0-001_epoch30_pretrained.pth.tar"
     shufflenet_loaded_model = models.shufflenet_v2_x2_0()
     num_features = shufflenet_loaded_model.fc.in_features
     shufflenet_loaded_model.fc = nn.Linear(num_features, 3)  # Replace the final layer
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+
+    if not os.path.exists(classifier_pth):
+        st.error(f"Error: ShuffleNet checkpoint file not found at {classifier_pth}")
+        return None
+
     try:
-        device = "cuda" if torch.cuda.is_available() else "cpu"
         checkpoint2 = torch.load(classifier_pth, map_location=torch.device(device))
         shufflenet_loaded_model.load_state_dict(checkpoint2)
         shufflenet_loaded_model.eval()
-        st.info("Classifier model loaded successfully.")
+        st.info("ShuffleNet model loaded successfully.")
         return shufflenet_loaded_model
     except Exception as e:
-        st.error(f"Error loading classifier model: {e}")
+        st.error(f"Error loading ShuffleNet model: {e}")
+        st.error(f"Details: {e}") # Print the specific error message
         return None
 
 #shufflenet_loaded_model = load_classifier()

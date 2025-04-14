@@ -203,8 +203,16 @@ if selected_example != "None" and selected_example:
         st.image(segmented_image, caption="Segmented Image", use_container_width=True)
 
         # --- Classification ---
+    # --- Classification ---
         st.subheader("Classification")
-        predicted_class = infer_single_image(effnet_loaded_model, segmented_image)
+        if classifier_model_name == "EfficientNet" and effnet_loaded_model:
+            predicted_class = infer_single_image(effnet_loaded_model, segmented_image)
+        elif classifier_model_name == "ShuffleNet" and shufflenet_loaded_model:
+            predicted_class = infer_single_image(shufflenet_loaded_model, segmented_image)
+        else:
+            st.warning("Classification model not loaded. Cannot perform classification.")
+            return
+            
         if predicted_class == 0:
             predicted_label = "AMD"
         elif predicted_class == 1:

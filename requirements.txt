@@ -4,6 +4,4 @@ torch  # Or your specific PyTorch version
 torchvision  # Or your specific TorchVision version (should be compatible with PyTorch)
 numpy
 albumentations
-glob2  # While 'glob' is built-in, 'glob2' is sometimes used for more advanced patterns
-time
 opencv-python-headless

@@ -100,7 +100,7 @@ st.title("Fundus images disease classification")
 
 # st.sidebar.subheader("Load Example Image")
 st.sidebar.header("Load Example Image")
-example_images = [None] + os.listdir(r"C:\Users\USER\Pictures\examples")  # Add None for the "Upload" option
+example_images = [None] + [f for f in os.listdir() if f.endswith(('.jpg', '.jpeg', '.png'))]
 selected_example = st.sidebar.selectbox("Choose an example image:", example_images)
 st.sidebar.subheader("Or select None if you want to upload your own image")
 

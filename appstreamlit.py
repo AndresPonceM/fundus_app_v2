@@ -40,6 +40,11 @@ def concatenate_file_chunks(chunk_prefix, output_filepath):
     except Exception as e:
         #st.error(f"An error occurred during concatenation: {e}")
         return False
+
+##################################################################################
+########################## Unet Model Initialization #############################
+##################################################################################
+
 @st.cache_resource
 def load_unet():
     unet_filename = "unet_gc_dice_0-9020.pth.tar"
@@ -118,16 +123,14 @@ def load_efficientnet():
             effnet_loaded_model.load_state_dict(checkpoint)
             effnet_loaded_model.eval()
             #st.info("EFFNET model loaded successfully.")
-        except Exception as e:
-            #st.error(f"Error loading EffNET model: {e}")
-            st.stop()
+
 
     return effnet_loaded_model
 
 #effnet_loaded_model = load_efficientnet()
 
 ##################################################################################
-########################## Classifier Model Initialization #############################
+########################## Classifier Model Initialization #######################
 ##################################################################################
 @st.cache_resource
 def load_shufflenet():
@@ -147,21 +150,13 @@ def load_shufflenet():
         shufflenet_loaded_model.eval()
         #st.info("ShuffleNet model loaded successfully.")
         return shufflenet_loaded_model
-    except Exception as e:
-        st.error(f"Error loading ShuffleNet model: {e}")
-        st.error(f"Details: {e}") # Print the specific error message
-        return None
+
 
 #shufflenet_loaded_model = load_classifier()
 
-# --- Streamlit App ---
 
 st.title("Fundus images disease classification")
 
-# Sidebar for model file uploads (optional, you can hardcode paths)
-# st.sidebar.header("Model Configuration")
-# unet_model_path = st.sidebar.file_uploader("Upload UNet Model (.pth)", type=["pth"])
-# classifier_model_path = st.sidebar.file_uploader("Upload Classifier Model (.pth)", type=["pth"])
 
 # Sidebar for model selection
 st.sidebar.header("Model Selection")
@@ -236,8 +231,7 @@ if selected_example != "None" and selected_example:
         del resized_img
         del binary_mask
         del segmented_image
-    except Exception as e:
-        st.error(f"An error occurred while processing the example image: {e}")
+
 
 if uploaded_file is not None:
     try:
@@ -285,5 +279,4 @@ if uploaded_file is not None:
         del segmented_image
         del uploaded_file
         gc.collect()
-    except Exception as e:
-        st.error(f"An error occurred: {e}")
+
